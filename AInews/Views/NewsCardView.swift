@@ -11,6 +11,7 @@ struct NewsCardView: View {
     let newsItem: NewsItem
     @ObservedObject var viewModel: NewsViewModel
     @Environment(\.colorScheme) var colorScheme
+    @State private var showingArticleDetail = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -100,9 +101,15 @@ struct NewsCardView: View {
                 if let url = URL(string: newsItem.url) {
                     Button(action: {
                         #if os(iOS)
-                        UIApplication.shared.open(url)
+                        showingArticleDetail = true
                         #elseif os(macOS)
-                        NSWorkspace.shared.open(url)
+                        // On macOS, open in browser for now
+                        if let nsUrl = URL(string: newsItem.url) {
+                            NSWorkspace.shared.open(nsUrl)
+                        }
+                        #else
+                        // On watchOS, do nothing or log that feature is unavailable
+                        print("Article detail view not available on watchOS")
                         #endif
                     }) {
                         HStack {
@@ -112,15 +119,22 @@ struct NewsCardView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundColor(.blue)
                     }
+                    #if os(iOS) // Sheet for ArticleDetailView is iOS-only
+                    .sheet(isPresented: $showingArticleDetail) {
+                        ArticleDetailView(newsItem: newsItem)
+                    }
+                    #endif
+                    // Updated contextMenu to be conditional for watchOS
+                    #if os(iOS) || os(macOS)
                     .contextMenu {
                         Button {
                             #if os(iOS)
-                            UIApplication.shared.open(url)
+                            if let actualURL = URL(string: newsItem.url) { UIApplication.shared.open(actualURL) }
                             #elseif os(macOS)
-                            NSWorkspace.shared.open(url)
+                            if let actualURL = URL(string: newsItem.url) { NSWorkspace.shared.open(actualURL) }
                             #endif
                         } label: {
-                            Label("Open Link", systemImage: "safari")
+                            Label("Open in Browser", systemImage: "safari")
                         }
 
                         Button {
@@ -135,6 +149,9 @@ struct NewsCardView: View {
                             Label("Copy Link", systemImage: "doc.on.doc")
                         }
                     }
+                    #else // watchOS - contextMenu might be different or not needed
+                    // .contextMenu { Text("No actions available") } // Example for watchOS if needed
+                    #endif
                 }
             }
         }
@@ -160,7 +177,8 @@ struct NewsCardView_Previews: PreviewProvider {
             url: "https://example.com", usecases: [], significance: "HIGH", impact: "Huge"
         )
         
-        let previewViewModel = NewsViewModel(context: PersistenceController.preview.container.viewContext)
+        let previewPreferencesService = UserPreferencesService()
+        let previewViewModel = NewsViewModel(context: PersistenceController.preview.container.viewContext, preferencesService: previewPreferencesService)
 
         return Group {
             NewsCardView(newsItem: previewItemHigh, viewModel: previewViewModel)

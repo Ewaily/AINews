@@ -8,9 +8,11 @@
 import Foundation
 import Combine
 import CoreData
+import SwiftUI
 
 class NewsViewModel: ObservableObject {
     @Published var newsItems: [NewsItem] = []
+    @Published var filteredNewsItems: [NewsItem] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var savedArticles: [SavedArticle] = []
@@ -20,25 +22,43 @@ class NewsViewModel: ObservableObject {
 
     // Core Data Managed Object Context
     private var viewContext: NSManagedObjectContext
+    private let preferencesService: UserPreferencesService
 
-    // Updated Initializer to accept a ManagedObjectContext
-    init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
+    // Designated Initializer
+    init(newsItems: [NewsItem] = [], isLoading: Bool = false, errorMessage: String? = nil, context: NSManagedObjectContext, preferencesService: UserPreferencesService) {
+        self.newsItems = newsItems
+        self.filteredNewsItems = [] // Initialize filteredNewsItems
+        self.isLoading = isLoading
+        self.errorMessage = errorMessage
         self.viewContext = context
+        self.preferencesService = preferencesService
+        
+        // Observe changes from preferencesService to re-filter news
+        preferencesService.$preferences
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in // We get the new preferences, but just need to trigger a re-filter
+                self?.applyFilters()
+            }
+            .store(in: &cancellables)
+        
+        // Initial filter application
+        applyFilters()
+        
         // Fetch saved articles on init to have them available early
         // We might also call this when online fetching fails or after saving/unsaving.
         fetchSavedArticles()
     }
     
-    // Convenience init for previews or testing, now also accepting a context
-    convenience init(newsItems: [NewsItem] = [], isLoading: Bool = false, errorMessage: String? = nil, context: NSManagedObjectContext = PersistenceController.preview.container.viewContext) {
-        self.init(context: context) // Call the designated initializer
-        self.newsItems = newsItems
-        self.isLoading = isLoading
-        self.errorMessage = errorMessage
+    // Convenience init for general use (e.g., in AInewsApp)
+    convenience init(context: NSManagedObjectContext, preferencesService: UserPreferencesService) {
+        self.init(newsItems: [], isLoading: false, errorMessage: nil, context: context, preferencesService: preferencesService)
     }
 
     @MainActor
-    func fetchNews() {
+    func fetchNews(isRefresh: Bool = false) {
+        if isRefresh {
+            // Optionally clear items or handle refresh state differently
+        }
         isLoading = true
         errorMessage = nil
 
@@ -54,8 +74,8 @@ class NewsViewModel: ObservableObject {
                         guard let dateStr2 = item2.date_posted else { return true }
                         return dateStr1 > dateStr2
                     })
-                    // Optionally, refresh saved articles list if needed, though not strictly necessary here
-                    // self.fetchSavedArticles()
+                    // Instead of assigning to newsItems directly, or in addition, apply filters
+                    self.applyFilters() // Apply filters after fetching new items
                 case .failure(let error):
                     self.errorMessage = "Failed to fetch news: \(error.localizedDescription)"
                     print("Error fetching news from ViewModel: \(error.localizedDescription)")
@@ -68,7 +88,43 @@ class NewsViewModel: ObservableObject {
     
     @MainActor
     func refreshNews() {
-        fetchNews()
+        fetchNews(isRefresh: true)
+    }
+
+    fileprivate func applyFilters() {
+        let currentPreferences = preferencesService.preferences // Get current preferences
+        
+        if currentPreferences.followedTopics.isEmpty && 
+           currentPreferences.mutedTopics.isEmpty && 
+           currentPreferences.mutedSources.isEmpty {
+            self.filteredNewsItems = self.newsItems // No filters, show all
+            return
+        }
+        
+        self.filteredNewsItems = self.newsItems.filter { item in
+            // Muted Sources Check (Case-insensitive)
+            if currentPreferences.mutedSources.contains(where: { item.subreddit.lowercased().contains($0) }) {
+                return false // Item's source is muted
+            }
+
+            let itemContent = "\(item.title) \(item.summary) \(item.tags.joined(separator: " "))".lowercased()
+
+            // Muted Topics/Keywords Check (Case-insensitive)
+            if !currentPreferences.mutedTopics.isEmpty {
+                if currentPreferences.mutedTopics.contains(where: { keyword in itemContent.contains(keyword) }) {
+                    return false // Item contains a muted keyword
+                }
+            }
+            
+            // Followed Topics/Keywords Check (Case-insensitive)
+            if !currentPreferences.followedTopics.isEmpty {
+                if !currentPreferences.followedTopics.contains(where: { keyword in itemContent.contains(keyword) }) {
+                    return false // Item does NOT contain any of the followed keywords, and followed list is not empty
+                }
+            }
+            
+            return true // Item passes all filters
+        }
     }
 
     // MARK: - Core Data Operations
@@ -152,3 +208,44 @@ class NewsViewModel: ObservableObject {
         }
     }
 }
+
+#if DEBUG // Only compile PreviewNewsViewModel for Debug builds (where Previews are used)
+// Now update the PreviewNewsViewModel to also accept and pass preferencesService
+class PreviewNewsViewModel: NewsViewModel {
+    // This convenience init is the primary way to set up PreviewNewsViewModel
+    convenience init(context: NSManagedObjectContext = PersistenceController.preview.container.viewContext, 
+                     preferencesService: UserPreferencesService = UserPreferencesService(), 
+                     isLoading: Bool = false, 
+                     errorMessage: String? = nil, 
+                     items: [NewsItem]? = nil) {
+        let defaultItems = [
+            NewsItem(id: 1, title: "Preview: Exciting AI News with topic_alpha", summary: "Summary of exciting AI news for preview...", subreddit: "[AI]", post_id: "p1", created_at: "2023-01-01T12:00:00Z", date_posted: "2023-01-01", tags: ["AI", "ML", "topic_alpha"], image: nil, url: "http://example.com", usecases: ["GenAI"], significance: "HIGH", impact: "Big impact."),
+            NewsItem(id: 2, title: "Preview: Another AI Update with topic_beta", summary: "More AI updates for preview...", subreddit: "[Tech]", post_id: "p2", created_at: "2023-01-02T12:00:00Z", date_posted: "2023-01-02", tags: ["Tech", "Update", "topic_beta"], image: nil, url: "http://example.com", usecases: ["Automation"], significance: "MEDIUM", impact: "Medium impact."),
+            NewsItem(id: 3, title: "News about a Muted Source", summary: "Content from a source that might be muted.", subreddit: "[MutedSourceExample]", post_id: "p3", created_at: "2023-01-01T12:00:00Z", date_posted: "2023-01-01", tags: ["AI"], image: nil, url: "http://example.com", usecases: [], significance: "LOW", impact: "Low impact.")
+        ]
+        // Calls the designated initializer of the superclass (NewsViewModel)
+        self.init(newsItems: items ?? defaultItems, isLoading: isLoading, errorMessage: errorMessage, context: context, preferencesService: preferencesService)
+    }
+    
+    // Override fetchNews and refreshNews for preview specific behavior (no network calls)
+    @MainActor
+    override func fetchNews(isRefresh: Bool = false) { 
+        print("PreviewNewsViewModel: fetchNews() called, network request disabled.")
+        self.isLoading = true // Simulate loading start
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Simulate delay
+            self.isLoading = false
+            self.applyFilters() // Apply filters after simulated load
+        }
+    }
+
+    @MainActor
+    override func refreshNews() {
+        print("PreviewNewsViewModel: refreshNews() called, network request disabled.")
+        self.isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.isLoading = false
+            self.applyFilters()
+        }
+    }
+}
+#endif // DEBUG

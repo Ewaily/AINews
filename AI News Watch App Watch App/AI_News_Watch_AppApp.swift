@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct AI_News_Watch_App_Watch_AppApp: App {
+    @StateObject private var preferencesService = UserPreferencesService()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(preferencesService: preferencesService)
         }
     }
 }

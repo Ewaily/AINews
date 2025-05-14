@@ -10,10 +10,13 @@ import CoreData
 
 struct NewsFeedView: View {
     @StateObject var viewModel: NewsViewModel
+    @ObservedObject var preferencesService: UserPreferencesService
+    @State private var showingPersonalizationSettings = false
 
     // Initializer to allow injecting viewModel, defaulting to a new one for app use
-    init(viewModel: NewsViewModel = NewsViewModel()) {
+    init(viewModel: NewsViewModel, preferencesService: UserPreferencesService) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.preferencesService = preferencesService
     }
 
     var body: some View {
@@ -96,7 +99,7 @@ struct NewsFeedView: View {
                             }
                             .padding()
                         }
-                    } else if viewModel.newsItems.isEmpty {
+                    } else if viewModel.filteredNewsItems.isEmpty {
                         VStack(spacing: 16) {
                              Image(systemName: "newspaper.fill")
                                 .resizable()
@@ -115,7 +118,7 @@ struct NewsFeedView: View {
                         .padding()
                     } else {
                         List {
-                            ForEach(viewModel.newsItems) { item in
+                            ForEach(viewModel.filteredNewsItems) { item in
                                 NewsCardView(newsItem: item, viewModel: viewModel)
                                     .listRowInsets(EdgeInsets(top: 8, leading: horizontalPadding, bottom: 8, trailing: horizontalPadding))
                                     #if !os(watchOS)
@@ -147,9 +150,38 @@ struct NewsFeedView: View {
                 }
             }
             .navigationTitle("AI Developer News")
+            #if os(iOS) || os(macOS) // Only show toolbar and sheet on iOS and macOS
+            .toolbar {
+                #if os(iOS)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingPersonalizationSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+                #elseif os(macOS)
+                ToolbarItem(placement: .primaryAction) { // Use a macOS compatible placement
+                    Button {
+                        showingPersonalizationSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+                #endif
+            }
+            .sheet(isPresented: $showingPersonalizationSettings) {
+                PersonalizationSettingsView(preferencesService: preferencesService)
+            }
+            #endif
             #if os(macOS)
             .frame(minWidth: 450, idealWidth: 600, maxWidth: .infinity, minHeight: 400, idealHeight: 700, maxHeight: .infinity)
             #endif
+            .onAppear {
+                #if os(iOS) || os(macOS) // Conditionally donate shortcut
+                ShortcutDonator.donateGetLatestNewsShortcut()
+                #endif
+            }
         }
         #if os(iOS)
         .navigationViewStyle(StackNavigationViewStyle()) // Adapts to iPhone/iPad, use Stack style for iPad
@@ -171,51 +203,39 @@ struct NewsFeedView: View {
     }
 }
 
-// Dedicated ViewModel for Previews to avoid actual network calls during design time
-class PreviewNewsViewModel: NewsViewModel {
-    // Updated convenience init to accept context and pass it to the superclass initializer
-    convenience init(context: NSManagedObjectContext = PersistenceController.preview.container.viewContext, isLoading: Bool = false, errorMessage: String? = nil, items: [NewsItem]? = nil) {
-        let defaultItems = [
-            NewsItem(id: 1, title: "Preview: Exciting AI News", summary: "Summary of exciting AI news for preview...", subreddit: "[AI]", post_id: "p1", created_at: "2023-01-01T12:00:00Z", date_posted: "2023-01-01", tags: ["AI", "ML"], image: nil, url: "http://example.com", usecases: ["GenAI"], significance: "HIGH", impact: "Big impact."),
-            NewsItem(id: 2, title: "Preview: Another AI Update", summary: "More AI updates for preview...", subreddit: "[Tech]", post_id: "p2", created_at: "2023-01-02T12:00:00Z", date_posted: "2023-01-02", tags: ["Tech", "Update"], image: nil, url: "http://example.com", usecases: ["Automation"], significance: "MEDIUM", impact: "Medium impact.")
-        ]
-        // Call the designated initializer of the superclass, passing the context and explicitly naming newsItems
-        self.init(newsItems: items ?? defaultItems, isLoading: isLoading, errorMessage: errorMessage, context: context)
-    }
-    
-    // Override to prevent network calls in previews
-    override func fetchNews() {
-        print("PreviewNewsViewModel: fetchNews() called, but network request is disabled for previews.")
-    }
-    override func refreshNews() {
-        print("PreviewNewsViewModel: refreshNews() called, but network request is disabled for previews.")
-    }
-}
-
+#if DEBUG // Ensure previews are only compiled for Debug builds
 struct NewsFeedView_Previews: PreviewProvider {
     static var previews: some View {
-        // Get the preview context from PersistenceController
         let previewContext = PersistenceController.preview.container.viewContext
-        
+        // Ensure UserPreferencesService is initialized for previews
+        let previewPreferencesService = UserPreferencesService()
+
+        // Use the PreviewNewsViewModel from NewsViewModel.swift (which expects preferencesService)
+        let previewViewModel = PreviewNewsViewModel(context: previewContext, preferencesService: previewPreferencesService, items: nil)
+        let previewViewModelEmpty = PreviewNewsViewModel(context: previewContext, preferencesService: previewPreferencesService, items: [])
+        let previewViewModelLoading = PreviewNewsViewModel(context: previewContext, preferencesService: previewPreferencesService, isLoading: true, items: [])
+        let previewViewModelError = PreviewNewsViewModel(context: previewContext, preferencesService: previewPreferencesService, errorMessage: "Could not connect. Please check internet.", items: [])
+
+
         Group {
-            // Pass the preview context to PreviewNewsViewModel, which then passes it to NewsViewModel
-            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: nil))
+            NewsFeedView(viewModel: previewViewModel, preferencesService: previewPreferencesService)
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode - With Data")
             
-            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: nil))
+            NewsFeedView(viewModel: previewViewModel, preferencesService: previewPreferencesService)
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode - With Data")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: []))
+            NewsFeedView(viewModel: previewViewModelEmpty, preferencesService: previewPreferencesService)
                 .previewDisplayName("Empty State")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, isLoading: true, items: []))
+            NewsFeedView(viewModel: previewViewModelLoading, preferencesService: previewPreferencesService)
                 .previewDisplayName("Loading State")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, errorMessage: "Could not connect. Please check internet.", items: []))
+            NewsFeedView(viewModel: previewViewModelError, preferencesService: previewPreferencesService)
                 .previewDisplayName("Error State")
         }
-        .environment(\.managedObjectContext, previewContext) // Also inject into environment for previews
+        .environment(\.managedObjectContext, previewContext)
     }
-} 
+}
+#endif // DEBUG for NewsFeedView_Previews

@@ -11,10 +11,16 @@ import SwiftUI
 struct AINewsApp: App {
     @StateObject private var newsViewModel: NewsViewModel
     @State private var showSplash = true // State to control splash screen visibility
+    @StateObject private var navigationManager = AppNavigationManager() // Add the navigation manager
+    @StateObject private var preferencesService: UserPreferencesService // Removed inline initialization
+    @State private var selectedTab: AppTab = .newsFeed // State to control TabView selection
 
     init() {
-        // Initialize NewsViewModel with the managed object context from the static shared instance
-        _newsViewModel = StateObject(wrappedValue: NewsViewModel(context: PersistenceController.shared.container.viewContext))
+        let persistenceController = PersistenceController.shared
+        let prefs = UserPreferencesService() // Create instance first
+        _preferencesService = StateObject(wrappedValue: prefs) // Initialize StateObject
+        // Initialize NewsViewModel with the managed object context and the created preferences service
+        _newsViewModel = StateObject(wrappedValue: NewsViewModel(context: persistenceController.container.viewContext, preferencesService: prefs))
     }
 
     var body: some Scene {
@@ -32,29 +38,48 @@ struct AINewsApp: App {
                         }
                 } else {
                     // Main TabView for app content
-                    TabView {
-                        NewsFeedView(viewModel: newsViewModel)
+                    TabView(selection: $selectedTab) { // Bind selection to selectedTab
+                        NewsFeedView(viewModel: newsViewModel, preferencesService: preferencesService)
                             .tabItem {
                                 Label("News Feed", systemImage: "newspaper")
                             }
+                            .tag(AppTab.newsFeed) // Tag for selection
 
                         SavedArticlesView(viewModel: newsViewModel)
                             .tabItem {
                                 Label("Bookmarks", systemImage: "bookmark.fill")
                             }
+                            .tag(AppTab.bookmarks) // Tag for selection
                     }
-                    .onAppear {
-                        // Fetch news only if not already loaded and no error when TabView appears
+                    .onAppear { // onAppear for TabView content setup
                         if newsViewModel.newsItems.isEmpty && !newsViewModel.isLoading && newsViewModel.errorMessage == nil {
                             newsViewModel.fetchNews()
                         }
-                        // Also ensure saved articles are loaded
                         newsViewModel.fetchSavedArticles()
+                    }
+                    // Moved onReceive outside of onAppear, applied directly to TabView
+                    .onReceive(navigationManager.$activeTab) { tab in
+                        if let tab = tab {
+                            selectedTab = tab
+                        }
                     }
                 }
             }
             // Use the static shared instance for the environment as well
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+            // Handle incoming NSUserActivity (which includes intents)
+            // Using string identifiers as a fallback if static .identifier is not found
+            .onContinueUserActivity("GetLatestNewsIntent") { userActivity in // Changed to string
+                print("Continuing user activity for GetLatestNewsIntent")
+                navigationManager.activeTab = .newsFeed
+            }
+            .onContinueUserActivity("ShowBookmarksIntent") { userActivity in // Changed to string
+                print("Continuing user activity for ShowBookmarksIntent")
+                navigationManager.activeTab = .bookmarks
+            }
+            .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { userActivity in
+                 // Handle web links if your app supports them via Universal Links
+            }
         }
         #if os(macOS)
         // You can add settings scene for macOS if needed

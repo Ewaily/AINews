@@ -7,11 +7,7 @@ struct SavedArticlesView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                #if os(iOS)
-                Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all)
-                #endif
-                
+            Group {
                 if viewModel.savedArticles.isEmpty {
                     VStack(spacing: 16) {
                         Image(systemName: "bookmark.slash.fill") // Or another appropriate icon
@@ -62,7 +58,10 @@ struct SavedArticlesView: View {
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("Bookmarked Articles")
+            .navigationTitle("Bookmarks")
+            #if os(macOS)
+            .frame(minWidth: 350, idealWidth: 450, maxWidth: .infinity, minHeight: 300, idealHeight: 600, maxHeight: .infinity)
+            #endif
             .toolbar {
                 #if os(iOS)
                 // Only show EditButton if there are saved articles
@@ -74,6 +73,9 @@ struct SavedArticlesView: View {
             .onAppear {
                 // Ensure saved articles are up-to-date when the view appears
                 viewModel.fetchSavedArticles()
+                #if os(iOS) || os(macOS) // Conditionally donate shortcut
+                ShortcutDonator.donateShowBookmarksShortcut()
+                #endif
             }
         }
         // Apply the same navigationViewStyle as NewsFeedView for consistency on iPad
@@ -94,7 +96,8 @@ struct SavedArticlesView: View {
 struct SavedArticlesView_Previews: PreviewProvider {
     static var previews: some View {
         let previewContext = PersistenceController.preview.container.viewContext
-        let previewViewModel = NewsViewModel(context: previewContext)
+        let previewPreferencesService = UserPreferencesService() // Create for preview
+        let previewViewModel = NewsViewModel(context: previewContext, preferencesService: previewPreferencesService) // Pass service
         
         // For preview, let's ensure there are some saved articles in the preview context
         // This is typically done by adding sample data directly in PersistenceController.preview

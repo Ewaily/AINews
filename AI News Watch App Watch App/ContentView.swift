@@ -11,15 +11,19 @@ import SwiftUI
 // This might require adding them to the Watch App's target membership in Xcode.
 
 struct ContentView: View {
-    // Initialize the NewsViewModel.
-    // For the watch, we use a preview/in-memory context as it doesn't share the main app's CoreData store directly yet.
-    // True offline/synced saved articles on watch would require WatchConnectivity.
-    @StateObject var viewModel = NewsViewModel(context: PersistenceController.preview.container.viewContext)
+    @ObservedObject var preferencesService: UserPreferencesService
+    @StateObject var viewModel: NewsViewModel
+
+    init(preferencesService: UserPreferencesService) {
+        self.preferencesService = preferencesService
+        // Initialize viewModel with the context and the passed-in preferencesService
+        _viewModel = StateObject(wrappedValue: NewsViewModel(context: PersistenceController.preview.container.viewContext, preferencesService: preferencesService))
+    }
 
     var body: some View {
         // Display the NewsFeedView
         // If NewsFeedView is not part of the watch target, this will cause an error.
-        NewsFeedView(viewModel: viewModel)
+        NewsFeedView(viewModel: viewModel, preferencesService: preferencesService)
         // It's good practice to fetch news when the view appears on the watch as well.
         .onAppear {
             // Check if data is already loaded or loading to avoid redundant fetches
@@ -31,8 +35,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    // For the preview, we can also pass a ViewModel,
-    // potentially a PreviewNewsViewModel if you have one configured for watch previews.
-    // For simplicity now, just using ContentView().
-    ContentView()
+    // For preview, ensure preferencesService is provided.
+    // If UserPreferencesService has a simple init(), this is fine.
+    ContentView(preferencesService: UserPreferencesService())
 }
