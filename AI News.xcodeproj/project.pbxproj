@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1007F4C92DD4DDDA005FEAA2 /* AI News Watch App Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1007F4BF2DD4DDD9005FEAA2 /* AI News Watch App Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		104DB52C2DD4E48900F4DBB7 /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1095852F2DD3690100FF550B /* NewsItem.swift */; };
+		104DB52D2DD4E48F00F4DBB7 /* NewsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585312DD3690100FF550B /* NewsService.swift */; };
+		104DB52E2DD4E49300F4DBB7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585332DD3690100FF550B /* Constants.swift */; };
+		104DB52F2DD4E49A00F4DBB7 /* NewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585352DD3690100FF550B /* NewsViewModel.swift */; };
+		104DB5302DD4E4A400F4DBB7 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585482DD36E6F00FF550B /* SplashScreenView.swift */; };
+		104DB5312DD4E4A800F4DBB7 /* NewsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585372DD3690100FF550B /* NewsCardView.swift */; };
+		104DB5322DD4E4AC00F4DBB7 /* NewsFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585382DD3690100FF550B /* NewsFeedView.swift */; };
+		104DB5332DD4E51C00F4DBB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1095853C2DD3690100FF550B /* Assets.xcassets */; };
 		1095853F2DD3690100FF550B /* NewsFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585382DD3690100FF550B /* NewsFeedView.swift */; };
 		109585402DD3690100FF550B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585332DD3690100FF550B /* Constants.swift */; };
 		109585412DD3690100FF550B /* AInewsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1095853B2DD3690100FF550B /* AInewsApp.swift */; };
@@ -16,9 +25,44 @@
 		109585462DD3690100FF550B /* NewsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585372DD3690100FF550B /* NewsCardView.swift */; };
 		109585472DD3690100FF550B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1095853C2DD3690100FF550B /* Assets.xcassets */; };
 		109585492DD36E6F00FF550B /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585482DD36E6F00FF550B /* SplashScreenView.swift */; };
+		10B5B8202DD504B500AC34FA /* AINewsDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 10C2158B2DD500440005C126 /* AINewsDataModel.xcdatamodeld */; };
+		10C215802DD4FA300005C126 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2157E2DD4FA300005C126 /* PersistenceController.swift */; };
+		10C215812DD4FA300005C126 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2157E2DD4FA300005C126 /* PersistenceController.swift */; };
+		10C215842DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */; };
+		10C215852DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215832DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift */; };
+		10C215862DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */; };
+		10C215872DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215832DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift */; };
+		10C215892DD4FE0B0005C126 /* SavedArticlesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215882DD4FE0B0005C126 /* SavedArticlesView.swift */; };
+		10C2158A2DD4FE0B0005C126 /* SavedArticlesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215882DD4FE0B0005C126 /* SavedArticlesView.swift */; };
+		10C2158F2DD501650005C126 /* AINewsDataModel.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = 10C2158B2DD500440005C126 /* AINewsDataModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1007F4C72DD4DDDA005FEAA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 10FD5CC82DD35F35004B07BA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1007F4BE2DD4DDD9005FEAA2;
+			remoteInfo = "AI News Watch App Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1007F4CD2DD4DDDA005FEAA2 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				1007F4C92DD4DDDA005FEAA2 /* AI News Watch App Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1007F4BF2DD4DDD9005FEAA2 /* AI News Watch App Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AI News Watch App Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1095852F2DD3690100FF550B /* NewsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItem.swift; sourceTree = "<group>"; };
 		109585312DD3690100FF550B /* NewsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsService.swift; sourceTree = "<group>"; };
 		109585332DD3690100FF550B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -29,10 +73,30 @@
 		1095853B2DD3690100FF550B /* AInewsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AInewsApp.swift; sourceTree = "<group>"; };
 		1095853C2DD3690100FF550B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		109585482DD36E6F00FF550B /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		10C2157E2DD4FA300005C126 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedArticle+CoreDataClass.swift"; sourceTree = "<group>"; };
+		10C215832DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		10C215882DD4FE0B0005C126 /* SavedArticlesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedArticlesView.swift; sourceTree = "<group>"; };
+		10C2158C2DD500440005C126 /* AINewsDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AINewsDataModel.xcdatamodel; sourceTree = "<group>"; };
 		10FD5CD02DD35F35004B07BA /* AI News.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AI News.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		1007F4C02DD4DDD9005FEAA2 /* AI News Watch App Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "AI News Watch App Watch App";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		1007F4BC2DD4DDD9005FEAA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		10FD5CCD2DD35F35004B07BA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,7 +110,10 @@
 		109585302DD3690100FF550B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */,
+				10C215832DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift */,
 				1095852F2DD3690100FF550B /* NewsItem.swift */,
+				10C2158B2DD500440005C126 /* AINewsDataModel.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -78,6 +145,7 @@
 		109585392DD3690100FF550B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				10C215882DD4FE0B0005C126 /* SavedArticlesView.swift */,
 				109585482DD36E6F00FF550B /* SplashScreenView.swift */,
 				109585372DD3690100FF550B /* NewsCardView.swift */,
 				109585382DD3690100FF550B /* NewsFeedView.swift */,
@@ -88,6 +156,7 @@
 		1095853E2DD3690100FF550B /* AInews */ = {
 			isa = PBXGroup;
 			children = (
+				10C2157F2DD4FA300005C126 /* Persistence */,
 				109585302DD3690100FF550B /* Models */,
 				109585322DD3690100FF550B /* Services */,
 				109585342DD3690100FF550B /* Utils */,
@@ -100,10 +169,19 @@
 			path = AInews;
 			sourceTree = "<group>";
 		};
+		10C2157F2DD4FA300005C126 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				10C2157E2DD4FA300005C126 /* PersistenceController.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		10FD5CC72DD35F35004B07BA = {
 			isa = PBXGroup;
 			children = (
 				1095853E2DD3690100FF550B /* AInews */,
+				1007F4C02DD4DDD9005FEAA2 /* AI News Watch App Watch App */,
 				10FD5CD12DD35F35004B07BA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				10FD5CD02DD35F35004B07BA /* AI News.app */,
+				1007F4BF2DD4DDD9005FEAA2 /* AI News Watch App Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,6 +198,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1007F4BE2DD4DDD9005FEAA2 /* AI News Watch App Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1007F4CA2DD4DDDA005FEAA2 /* Build configuration list for PBXNativeTarget "AI News Watch App Watch App" */;
+			buildPhases = (
+				1007F4BB2DD4DDD9005FEAA2 /* Sources */,
+				1007F4BC2DD4DDD9005FEAA2 /* Frameworks */,
+				1007F4BD2DD4DDD9005FEAA2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1007F4C02DD4DDD9005FEAA2 /* AI News Watch App Watch App */,
+			);
+			name = "AI News Watch App Watch App";
+			packageProductDependencies = (
+			);
+			productName = "AI News Watch App Watch App";
+			productReference = 1007F4BF2DD4DDD9005FEAA2 /* AI News Watch App Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 		10FD5CCF2DD35F35004B07BA /* AI News */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 10FD5CDC2DD35F36004B07BA /* Build configuration list for PBXNativeTarget "AI News" */;
@@ -126,10 +227,12 @@
 				10FD5CCC2DD35F35004B07BA /* Sources */,
 				10FD5CCD2DD35F35004B07BA /* Frameworks */,
 				10FD5CCE2DD35F35004B07BA /* Resources */,
+				1007F4CD2DD4DDDA005FEAA2 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1007F4C82DD4DDDA005FEAA2 /* PBXTargetDependency */,
 			);
 			name = "AI News";
 			packageProductDependencies = (
@@ -148,6 +251,9 @@
 				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					1007F4BE2DD4DDD9005FEAA2 = {
+						CreatedOnToolsVersion = 16.3;
+					};
 					10FD5CCF2DD35F35004B07BA = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -168,15 +274,25 @@
 			projectRoot = "";
 			targets = (
 				10FD5CCF2DD35F35004B07BA /* AI News */,
+				1007F4BE2DD4DDD9005FEAA2 /* AI News Watch App Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1007F4BD2DD4DDD9005FEAA2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				104DB5332DD4E51C00F4DBB7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		10FD5CCE2DD35F35004B07BA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10C2158F2DD501650005C126 /* AINewsDataModel.xcdatamodeld in Resources */,
 				109585472DD3690100FF550B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -184,15 +300,38 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1007F4BB2DD4DDD9005FEAA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10B5B8202DD504B500AC34FA /* AINewsDataModel.xcdatamodeld in Sources */,
+				104DB5302DD4E4A400F4DBB7 /* SplashScreenView.swift in Sources */,
+				10C215862DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */,
+				10C215872DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */,
+				104DB52E2DD4E49300F4DBB7 /* Constants.swift in Sources */,
+				104DB52F2DD4E49A00F4DBB7 /* NewsViewModel.swift in Sources */,
+				104DB52C2DD4E48900F4DBB7 /* NewsItem.swift in Sources */,
+				104DB52D2DD4E48F00F4DBB7 /* NewsService.swift in Sources */,
+				104DB5322DD4E4AC00F4DBB7 /* NewsFeedView.swift in Sources */,
+				10C215892DD4FE0B0005C126 /* SavedArticlesView.swift in Sources */,
+				104DB5312DD4E4A800F4DBB7 /* NewsCardView.swift in Sources */,
+				10C215802DD4FA300005C126 /* PersistenceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		10FD5CCC2DD35F35004B07BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10C215812DD4FA300005C126 /* PersistenceController.swift in Sources */,
 				1095853F2DD3690100FF550B /* NewsFeedView.swift in Sources */,
 				109585402DD3690100FF550B /* Constants.swift in Sources */,
+				10C2158A2DD4FE0B0005C126 /* SavedArticlesView.swift in Sources */,
 				109585492DD36E6F00FF550B /* SplashScreenView.swift in Sources */,
 				109585412DD3690100FF550B /* AInewsApp.swift in Sources */,
 				109585432DD3690100FF550B /* NewsItem.swift in Sources */,
+				10C215842DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */,
+				10C215852DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */,
 				109585442DD3690100FF550B /* NewsService.swift in Sources */,
 				109585452DD3690100FF550B /* NewsViewModel.swift in Sources */,
 				109585462DD3690100FF550B /* NewsCardView.swift in Sources */,
@@ -201,7 +340,75 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1007F4C82DD4DDDA005FEAA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = 1007F4BE2DD4DDD9005FEAA2 /* AI News Watch App Watch App */;
+			targetProxy = 1007F4C72DD4DDDA005FEAA2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		1007F4CB2DD4DDDA005FEAA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U98MB87JNM;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "AI News Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.TrianglZ.AInews;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TrianglZ.AInews.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Debug;
+		};
+		1007F4CC2DD4DDDA005FEAA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U98MB87JNM;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "AI News Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.TrianglZ.AInews;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TrianglZ.AInews.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Release;
+		};
 		10FD5CDA2DD35F36004B07BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -325,11 +532,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AInews/AInews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = U98MB87JNM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -338,21 +546,22 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.4;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TrianglZ.AInews;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Debug;
@@ -364,11 +573,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AInews/AInews.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = U98MB87JNM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -377,21 +587,22 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.4;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TrianglZ.AInews;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Release;
@@ -399,6 +610,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1007F4CA2DD4DDDA005FEAA2 /* Build configuration list for PBXNativeTarget "AI News Watch App Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1007F4CB2DD4DDDA005FEAA2 /* Debug */,
+				1007F4CC2DD4DDDA005FEAA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		10FD5CCB2DD35F35004B07BA /* Build configuration list for PBXProject "AI News" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -418,6 +638,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		10C2158B2DD500440005C126 /* AINewsDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				10C2158C2DD500440005C126 /* AINewsDataModel.xcdatamodel */,
+			);
+			currentVersion = 10C2158C2DD500440005C126 /* AINewsDataModel.xcdatamodel */;
+			path = AINewsDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 10FD5CC82DD35F35004B07BA /* Project object */;
 }

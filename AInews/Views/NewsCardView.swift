@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NewsCardView: View {
     let newsItem: NewsItem
+    @ObservedObject var viewModel: NewsViewModel
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -46,11 +47,26 @@ struct NewsCardView: View {
                     
                     Spacer()
                     
-                    if newsItem.displayDate != "Unknown Date" {
-                        Text(newsItem.displayDate)
-                            .font(.caption2.weight(.medium))
-                            .foregroundColor(.secondary)
+                    Button {
+                        if viewModel.isArticleSaved(articleID: newsItem.id) {
+                            viewModel.unsaveArticle(articleID: newsItem.id)
+                        } else {
+                            viewModel.saveArticle(newsItem: newsItem)
+                        }
+                    } label: {
+                        Image(systemName: viewModel.isArticleSaved(articleID: newsItem.id) ? "bookmark.fill" : "bookmark")
+                            .font(.title2)
+                            .foregroundColor(viewModel.isArticleSaved(articleID: newsItem.id) ? .accentColor : .gray)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
+                    .padding(.leading, 5)
+                    .contentShape(Rectangle())
+                }
+
+                if newsItem.displayDate != "Unknown Date" {
+                    Text(newsItem.displayDate)
+                        .font(.caption2.weight(.medium))
+                        .foregroundColor(.secondary)
                 }
 
                 Text(newsItem.title)
@@ -81,10 +97,8 @@ struct NewsCardView: View {
                     .frame(height: 28)
                 }
                 
-                // "Read more" button with context menu
                 if let url = URL(string: newsItem.url) {
                     Button(action: {
-                        // Action for normal tap: open the URL
                         #if os(iOS)
                         UIApplication.shared.open(url)
                         #elseif os(macOS)
@@ -96,7 +110,7 @@ struct NewsCardView: View {
                             Image(systemName: "arrow.up.right.square.fill")
                         }
                         .font(.caption.weight(.semibold))
-                        .foregroundColor(.blue) // Consistent with previous fix
+                        .foregroundColor(.blue)
                     }
                     .contextMenu {
                         Button {
@@ -121,7 +135,6 @@ struct NewsCardView: View {
                             Label("Copy Link", systemImage: "doc.on.doc")
                         }
                     }
-                    // Removed .padding(.vertical, 6) and .padding(.top, 6) as VStack spacing handles it
                 }
             }
         }
@@ -147,29 +160,22 @@ struct NewsCardView_Previews: PreviewProvider {
             url: "https://example.com", usecases: [], significance: "HIGH", impact: "Huge"
         )
         
-        let previewItemMediumUnknownDate = NewsItem(
-            id: 2,
-            title: "Ethical Considerations in AI: A New Framework Proposed",
-            summary: "A consortium of ethicists and AI developers has proposed a new framework for guiding the ethical development and deployment of artificial intelligence systems, aiming to address biases and ensure fairness.",
-            subreddit: "[Ethics]", post_id: "p2", created_at: nil, date_posted: nil,
-            tags: ["AI Ethics", "Framework", "Bias", "Fairness"],
-            image: nil,
-            url: "https://example.com", usecases: [], significance: "MEDIUM", impact: "Moderate"
-        )
+        let previewViewModel = NewsViewModel(context: PersistenceController.preview.container.viewContext)
 
         return Group {
-            NewsCardView(newsItem: previewItemHigh)
+            NewsCardView(newsItem: previewItemHigh, viewModel: previewViewModel)
                 .padding()
                 .previewLayout(.sizeThatFits)
                 .environment(\.colorScheme, .light)
-                .previewDisplayName("Light Mode - With Date")
+                .previewDisplayName("Light Mode - Not Saved")
 
-            NewsCardView(newsItem: previewItemMediumUnknownDate)
+            NewsCardView(newsItem: previewItemHigh, viewModel: previewViewModel)
                 .padding()
                 .background(Color.black)
                 .previewLayout(.sizeThatFits)
                 .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark Mode - Unknown Date")
+                .previewDisplayName("Dark Mode - Potentially Saved")
         }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

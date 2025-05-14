@@ -9,8 +9,13 @@ import SwiftUI
 
 @main
 struct AINewsApp: App {
-    @StateObject private var newsViewModel = NewsViewModel()
+    @StateObject private var newsViewModel: NewsViewModel
     @State private var showSplash = true // State to control splash screen visibility
+
+    init() {
+        // Initialize NewsViewModel with the managed object context from the static shared instance
+        _newsViewModel = StateObject(wrappedValue: NewsViewModel(context: PersistenceController.shared.container.viewContext))
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -26,15 +31,30 @@ struct AINewsApp: App {
                             }
                         }
                 } else {
-                    NewsFeedView(viewModel: newsViewModel)
-                        .onAppear {
-                            // Fetch news only if not already loaded and no error
-                            if newsViewModel.newsItems.isEmpty && !newsViewModel.isLoading && newsViewModel.errorMessage == nil {
-                                newsViewModel.fetchNews()
+                    // Main TabView for app content
+                    TabView {
+                        NewsFeedView(viewModel: newsViewModel)
+                            .tabItem {
+                                Label("News Feed", systemImage: "newspaper")
                             }
+
+                        SavedArticlesView(viewModel: newsViewModel)
+                            .tabItem {
+                                Label("Bookmarks", systemImage: "bookmark.fill")
+                            }
+                    }
+                    .onAppear {
+                        // Fetch news only if not already loaded and no error when TabView appears
+                        if newsViewModel.newsItems.isEmpty && !newsViewModel.isLoading && newsViewModel.errorMessage == nil {
+                            newsViewModel.fetchNews()
                         }
+                        // Also ensure saved articles are loaded
+                        newsViewModel.fetchSavedArticles()
+                    }
                 }
             }
+            // Use the static shared instance for the environment as well
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
         #if os(macOS)
         // You can add settings scene for macOS if needed

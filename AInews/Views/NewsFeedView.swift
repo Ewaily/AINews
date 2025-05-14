@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct NewsFeedView: View {
     @StateObject var viewModel: NewsViewModel
@@ -32,33 +33,69 @@ struct NewsFeedView: View {
                             .scaleEffect(1.5)
                             .padding()
                     } else if let errorMessage = viewModel.errorMessage {
-                        VStack(spacing: 16) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.orange)
-                            Text("Oops! Something went wrong.")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            Text(errorMessage)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                            Button {
-                                viewModel.fetchNews()
-                            } label: {
-                                Text("Retry")
-                                    .fontWeight(.semibold)
-                                    .padding(.horizontal, 20)
-                                    .padding(.vertical, 10)
-                                    .background(Color.accentColor)
-                                    .foregroundColor(Color.white)
-                                    .clipShape(Capsule())
+                        // If OFFLINE and we HAVE saved articles, show them instead of just the error.
+                        if !viewModel.savedArticles.isEmpty {
+                            List {
+                                Section(header: Text("Offline Articles").font(.headline).padding(.leading, -8)) {
+                                    Text("Showing saved articles. You are currently offline.")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .listRowInsets(EdgeInsets(top: 0, leading: horizontalPadding, bottom: 8, trailing: horizontalPadding))
+
+                                    ForEach(viewModel.savedArticles) { savedArticle in
+                                        // Display saved articles using a simplified card or by adapting NewsCardView
+                                        // For now, a simplified display like in SavedArticlesView
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text(savedArticle.title ?? "No Title")
+                                                .font(.headline)
+                                            Text(savedArticle.summary ?? "No Summary")
+                                                .font(.subheadline)
+                                                .lineLimit(3)
+                                            HStack {
+                                                Text("Saved: \(savedArticle.savedAt ?? Date(), style: .date)")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                                Spacer()
+                                                // No direct unsave here, user can go to Bookmarks tab
+                                                Image(systemName: "bookmark.fill")
+                                                     .foregroundColor(.gray) // Indicate it's from saved, but not interactive here
+                                            }
+                                        }
+                                        .padding(.vertical, 8)
+                                    }
+                                }
                             }
+                            .listStyle(.plain)
+                        } else {
+                            // Standard error display if no saved articles or other error
+                            VStack(spacing: 16) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(.orange)
+                                Text("Oops! Something went wrong.")
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                                Text(errorMessage)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal)
+                                Button {
+                                    viewModel.fetchNews()
+                                } label: {
+                                    Text("Retry")
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal, 20)
+                                        .padding(.vertical, 10)
+                                        .background(Color.accentColor)
+                                        .foregroundColor(Color.white)
+                                        .clipShape(Capsule())
+                                }
+                            }
+                            .padding()
                         }
-                        .padding()
                     } else if viewModel.newsItems.isEmpty {
                         VStack(spacing: 16) {
                              Image(systemName: "newspaper.fill")
@@ -79,9 +116,11 @@ struct NewsFeedView: View {
                     } else {
                         List {
                             ForEach(viewModel.newsItems) { item in
-                                NewsCardView(newsItem: item)
+                                NewsCardView(newsItem: item, viewModel: viewModel)
                                     .listRowInsets(EdgeInsets(top: 8, leading: horizontalPadding, bottom: 8, trailing: horizontalPadding))
+                                    #if !os(watchOS)
                                     .listRowSeparator(.hidden)
+                                    #endif
                                     .listRowBackground(Color.clear)
                             }
                             // Section for Copyright Footer
@@ -113,7 +152,7 @@ struct NewsFeedView: View {
             #endif
         }
         #if os(iOS)
-        .navigationViewStyle(.automatic) // Adapts to iPhone/iPad
+        .navigationViewStyle(StackNavigationViewStyle()) // Adapts to iPhone/iPad, use Stack style for iPad
         #endif
     }
     
@@ -134,13 +173,14 @@ struct NewsFeedView: View {
 
 // Dedicated ViewModel for Previews to avoid actual network calls during design time
 class PreviewNewsViewModel: NewsViewModel {
-    convenience init(isLoading: Bool = false, errorMessage: String? = nil, items: [NewsItem]? = nil) {
+    // Updated convenience init to accept context and pass it to the superclass initializer
+    convenience init(context: NSManagedObjectContext = PersistenceController.preview.container.viewContext, isLoading: Bool = false, errorMessage: String? = nil, items: [NewsItem]? = nil) {
         let defaultItems = [
             NewsItem(id: 1, title: "Preview: Exciting AI News", summary: "Summary of exciting AI news for preview...", subreddit: "[AI]", post_id: "p1", created_at: "2023-01-01T12:00:00Z", date_posted: "2023-01-01", tags: ["AI", "ML"], image: nil, url: "http://example.com", usecases: ["GenAI"], significance: "HIGH", impact: "Big impact."),
             NewsItem(id: 2, title: "Preview: Another AI Update", summary: "More AI updates for preview...", subreddit: "[Tech]", post_id: "p2", created_at: "2023-01-02T12:00:00Z", date_posted: "2023-01-02", tags: ["Tech", "Update"], image: nil, url: "http://example.com", usecases: ["Automation"], significance: "MEDIUM", impact: "Medium impact.")
         ]
-        // Call the designated initializer of the superclass
-        self.init(newsItems: items ?? defaultItems, isLoading: isLoading, errorMessage: errorMessage)
+        // Call the designated initializer of the superclass, passing the context and explicitly naming newsItems
+        self.init(newsItems: items ?? defaultItems, isLoading: isLoading, errorMessage: errorMessage, context: context)
     }
     
     // Override to prevent network calls in previews
@@ -154,23 +194,28 @@ class PreviewNewsViewModel: NewsViewModel {
 
 struct NewsFeedView_Previews: PreviewProvider {
     static var previews: some View {
+        // Get the preview context from PersistenceController
+        let previewContext = PersistenceController.preview.container.viewContext
+        
         Group {
-            NewsFeedView(viewModel: PreviewNewsViewModel(items: nil))
+            // Pass the preview context to PreviewNewsViewModel, which then passes it to NewsViewModel
+            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: nil))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode - With Data")
             
-            NewsFeedView(viewModel: PreviewNewsViewModel(items: nil))
+            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: nil))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode - With Data")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(items: []))
+            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, items: []))
                 .previewDisplayName("Empty State")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(isLoading: true, items: []))
+            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, isLoading: true, items: []))
                 .previewDisplayName("Loading State")
 
-            NewsFeedView(viewModel: PreviewNewsViewModel(errorMessage: "Could not connect. Please check internet.", items: []))
+            NewsFeedView(viewModel: PreviewNewsViewModel(context: previewContext, errorMessage: "Could not connect. Please check internet.", items: []))
                 .previewDisplayName("Error State")
         }
+        .environment(\.managedObjectContext, previewContext) // Also inject into environment for previews
     }
 } 
