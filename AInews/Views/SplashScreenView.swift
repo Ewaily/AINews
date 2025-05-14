@@ -50,6 +50,13 @@ struct SplashScreenView: View {
                 
                 Spacer()
                 Spacer() // Add more space at the bottom if needed
+
+                // Copyright Notice
+                Text("© \(currentYear) TrianglZ LLC. All rights reserved.")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .opacity(textOpacity) // Optionally animate with text
+                    .padding(.bottom, 20) // Ensure it's above the very bottom edge
             }
         }
         .onAppear {
@@ -67,6 +74,12 @@ struct SplashScreenView: View {
             
             // The overall splash duration is still controlled in AINewsApp.swift
         }
+    }
+
+    private var currentYear: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        return formatter.string(from: Date())
     }
 }
 

@@ -84,6 +84,17 @@ struct NewsFeedView: View {
                                     .listRowSeparator(.hidden)
                                     .listRowBackground(Color.clear)
                             }
+                            // Section for Copyright Footer
+                            Section {
+                                // Empty content for the section, we only need the footer
+                            } footer: {
+                                Text("© \(currentYear) TrianglZ LLC. All rights reserved.")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .padding(.top, 20) // Add some space above the copyright
+                                    .padding(.bottom, 10) // Add some space below
+                            }
                         }
                         .listStyle(.plain)
                         #if os(iOS)
@@ -106,6 +117,12 @@ struct NewsFeedView: View {
         #endif
     }
     
+    private var currentYear: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        return formatter.string(from: Date())
+    }
+
     private var horizontalPadding: CGFloat {
         #if os(macOS)
         return 16

@@ -60,6 +60,12 @@ struct NewsItem: Codable, Identifiable {
     let significance: String // "HIGH", "MEDIUM", "LOW"
     let impact: String
 
+    // Computed property to convert image string to URL
+    var imageURL: URL? {
+        guard let imageString = image else { return nil }
+        return URL(string: imageString)
+    }
+
     // To conform to Identifiable, 'id' is already unique.
 
     // Computed property to get SignificanceLevel enum
