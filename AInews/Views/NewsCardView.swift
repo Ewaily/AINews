@@ -74,6 +74,8 @@ struct NewsCardView: View {
                     .font(.headline.weight(.semibold))
                     .foregroundColor(.primary)
                     .lineLimit(2)
+                    .truncationMode(.tail)
+                    .minimumScaleFactor(0.8)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         #if os(iOS)
@@ -100,6 +102,7 @@ struct NewsCardView: View {
                     .foregroundColor(.secondary)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
+                    .minimumScaleFactor(0.8)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         #if os(iOS)

@@ -38,6 +38,8 @@ struct SavedArticlesView: View {
                                 Text(savedArticle.summary ?? "No Summary")
                                     .font(.subheadline)
                                     .lineLimit(3)
+                                    .truncationMode(.tail)
+                                    .minimumScaleFactor(0.8)
                                 HStack {
                                     Text("Saved: \(savedArticle.savedAt ?? Date(), style: .date)")
                                         .font(.caption)
