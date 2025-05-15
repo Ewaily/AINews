@@ -239,38 +239,128 @@ struct ArticleDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var fontSizeMultiplier: CGFloat = 1.0
     @StateObject private var webViewViewModel = WebViewViewModel()
-
+    @ObservedObject var viewModel: NewsViewModel
+    
     var body: some View {
         NavigationView { // NavigationView needed for .toolbar and navigationTitle
-            ArticleWebView(urlString: newsItem.url, fontSizeMultiplier: fontSizeMultiplier, viewModel: webViewViewModel)
-                .navigationTitle(Text(newsItem.title))
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Done") {
-                            presentationMode.wrappedValue.dismiss()
+            VStack(alignment: .leading, spacing: 0) {
+                // AI Summary card at the top with enhanced prominence
+                if let aiSummary = newsItem.aiSummary {
+                    VStack(alignment: .leading, spacing: 12) {
+                        // Enhanced badge header
+                        HStack(spacing: 6) {
+                            Image(systemName: "brain.head.profile")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                            
+                            Text("Summarized by On-Device AI")
+                                .font(.caption.weight(.semibold))
+                                .foregroundColor(.white)
                         }
-                    }
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button {
-                            adjustFontSize(by: -0.1)
-                        } label: {
-                            Image(systemName: "textformat.size.smaller")
-                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color.purple)
+                        .clipShape(Capsule())
                         
-                        Button {
-                            adjustFontSize(by: 0.1)
-                        } label: {
-                            Image(systemName: "textformat.size.larger")
+                        Text(aiSummary)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .padding(.top, 4)
+                    }
+                    .padding(16)
+                    .background(Color.purple.opacity(0.08))
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.purple.opacity(0.2), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+                } else if newsItem.isGeneratingAISummary {
+                    VStack(spacing: 12) {
+                        HStack {
+                            ProgressView()
+                                .scaleEffect(0.9)
+                            Text("Generating AI Summary...")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
+                                .padding(.leading, 8)
                         }
-
-                        Button {
-                            shareArticle()
-                        } label: {
-                            Image(systemName: "square.and.arrow.up")
+                        Text("Our on-device AI is analyzing this article to create a concise summary.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(16)
+                    .background(Color.purple.opacity(0.08))
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.purple.opacity(0.2), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+                } else {
+                    Button {
+                        viewModel.generateAISummary(for: newsItem)
+                    } label: {
+                        HStack {
+                            Image(systemName: "wand.and.stars")
+                                .font(.headline)
+                            Text("Generate On-Device AI Summary")
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
                         }
+                        .foregroundColor(.purple)
+                        .padding(16)
+                        .background(Color.purple.opacity(0.08))
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.purple.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+                }
+                
+                // Web view with the article content
+                ArticleWebView(urlString: newsItem.url, fontSizeMultiplier: fontSizeMultiplier, viewModel: webViewViewModel)
+            }
+            .navigationTitle(Text(newsItem.title))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Done") {
+                        presentationMode.wrappedValue.dismiss()
                     }
                 }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        adjustFontSize(by: -0.1)
+                    } label: {
+                        Image(systemName: "textformat.size.smaller")
+                    }
+                    
+                    Button {
+                        adjustFontSize(by: 0.1)
+                    } label: {
+                        Image(systemName: "textformat.size.larger")
+                    }
+
+                    Button {
+                        shareArticle()
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+            }
         }
     }
 
@@ -298,7 +388,10 @@ struct ArticleDetailView: View {
 // Preview for ArticleDetailView (iOS only)
 struct ArticleDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleDetailView(newsItem: NewsItem(id: 1, title: "Sample Article Title", summary: "This is a sample summary.", subreddit: "Tech", post_id: "123", created_at: "2023-01-01", date_posted: "2023-01-01", tags: ["sample", "tech"], image: nil, url: "https://www.apple.com", usecases: [], significance: "HIGH", impact: "Major"))
+        let previewPreferencesService = UserPreferencesService()
+        let previewViewModel = NewsViewModel(context: PersistenceController.preview.container.viewContext, preferencesService: previewPreferencesService)
+        
+        ArticleDetailView(newsItem: NewsItem(id: 1, title: "Sample Article Title", summary: "This is a sample summary.", subreddit: "Tech", post_id: "123", created_at: "2023-01-01", date_posted: "2023-01-01", tags: ["sample", "tech"], image: nil, url: "https://www.apple.com", usecases: [], significance: "HIGH", impact: "Major"), viewModel: previewViewModel)
     }
 }
 #endif // os(iOS) for ArticleDetailView

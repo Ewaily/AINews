@@ -37,7 +37,13 @@
 		109585462DD3690100FF550B /* NewsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585372DD3690100FF550B /* NewsCardView.swift */; };
 		109585472DD3690100FF550B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1095853C2DD3690100FF550B /* Assets.xcassets */; };
 		109585492DD36E6F00FF550B /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109585482DD36E6F00FF550B /* SplashScreenView.swift */; };
+		10A4FA932DD5DD34006C548B /* AIFeatureIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A4FA922DD5DD34006C548B /* AIFeatureIntroView.swift */; };
+		10A4FA942DD5DD34006C548B /* AIFeatureIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A4FA922DD5DD34006C548B /* AIFeatureIntroView.swift */; };
 		10B5B8202DD504B500AC34FA /* AINewsDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 10C2158B2DD500440005C126 /* AINewsDataModel.xcdatamodeld */; };
+		10B756902DD5657A00F45691 /* ArticleSummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B7568F2DD5657A00F45691 /* ArticleSummarizer.swift */; };
+		10B756912DD5657A00F45691 /* ArticleSummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B7568F2DD5657A00F45691 /* ArticleSummarizer.swift */; };
+		10B756932DD565C500F45691 /* AISummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B756922DD565C500F45691 /* AISummaryView.swift */; };
+		10B756942DD565C500F45691 /* AISummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B756922DD565C500F45691 /* AISummaryView.swift */; };
 		10C215802DD4FA300005C126 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2157E2DD4FA300005C126 /* PersistenceController.swift */; };
 		10C215812DD4FA300005C126 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2157E2DD4FA300005C126 /* PersistenceController.swift */; };
 		10C215842DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */; };
@@ -92,6 +98,9 @@
 		1095853B2DD3690100FF550B /* AInewsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AInewsApp.swift; sourceTree = "<group>"; };
 		1095853C2DD3690100FF550B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		109585482DD36E6F00FF550B /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		10A4FA922DD5DD34006C548B /* AIFeatureIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeatureIntroView.swift; sourceTree = "<group>"; };
+		10B7568F2DD5657A00F45691 /* ArticleSummarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleSummarizer.swift; sourceTree = "<group>"; };
+		10B756922DD565C500F45691 /* AISummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryView.swift; sourceTree = "<group>"; };
 		10C2157E2DD4FA300005C126 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		10C215822DD4FB810005C126 /* SavedArticle+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedArticle+CoreDataClass.swift"; sourceTree = "<group>"; };
 		10C215832DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SavedArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -140,6 +149,7 @@
 		109585322DD3690100FF550B /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				10B7568F2DD5657A00F45691 /* ArticleSummarizer.swift */,
 				10851A4E2DD554C200B443A3 /* UserPreferencesService.swift */,
 				109585312DD3690100FF550B /* NewsService.swift */,
 			);
@@ -166,6 +176,8 @@
 		109585392DD3690100FF550B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				10A4FA922DD5DD34006C548B /* AIFeatureIntroView.swift */,
+				10B756922DD565C500F45691 /* AISummaryView.swift */,
 				10851A512DD554E900B443A3 /* PersonalizationSettingsView.swift */,
 				10851A3F2DD549C600B443A3 /* ArticleWebView.swift */,
 				10C215882DD4FE0B0005C126 /* SavedArticlesView.swift */,
@@ -330,11 +342,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10A4FA932DD5DD34006C548B /* AIFeatureIntroView.swift in Sources */,
 				10B5B8202DD504B500AC34FA /* AINewsDataModel.xcdatamodeld in Sources */,
+				10B756932DD565C500F45691 /* AISummaryView.swift in Sources */,
 				10851A4F2DD554C200B443A3 /* UserPreferencesService.swift in Sources */,
 				104DB5302DD4E4A400F4DBB7 /* SplashScreenView.swift in Sources */,
 				10C215862DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */,
 				10C215872DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */,
+				10B756912DD5657A00F45691 /* ArticleSummarizer.swift in Sources */,
 				104DB52E2DD4E49300F4DBB7 /* Constants.swift in Sources */,
 				104DB52F2DD4E49A00F4DBB7 /* NewsViewModel.swift in Sources */,
 				104DB52C2DD4E48900F4DBB7 /* NewsItem.swift in Sources */,
@@ -362,11 +377,14 @@
 				10851A532DD554E900B443A3 /* PersonalizationSettingsView.swift in Sources */,
 				109585402DD3690100FF550B /* Constants.swift in Sources */,
 				10C2158A2DD4FE0B0005C126 /* SavedArticlesView.swift in Sources */,
+				10B756902DD5657A00F45691 /* ArticleSummarizer.swift in Sources */,
 				109585492DD36E6F00FF550B /* SplashScreenView.swift in Sources */,
 				10851A502DD554C200B443A3 /* UserPreferencesService.swift in Sources */,
 				109585412DD3690100FF550B /* AInewsApp.swift in Sources */,
+				10A4FA942DD5DD34006C548B /* AIFeatureIntroView.swift in Sources */,
 				109585432DD3690100FF550B /* NewsItem.swift in Sources */,
 				10C215842DD4FB810005C126 /* SavedArticle+CoreDataClass.swift in Sources */,
+				10B756942DD565C500F45691 /* AISummaryView.swift in Sources */,
 				10851A412DD549C600B443A3 /* ArticleWebView.swift in Sources */,
 				10C215852DD4FB810005C126 /* SavedArticle+CoreDataProperties.swift in Sources */,
 				10851A4D2DD550D000B443A3 /* AINewsIntentsManager.swift in Sources */,

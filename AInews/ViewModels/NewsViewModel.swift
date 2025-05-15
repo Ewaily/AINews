@@ -127,6 +127,121 @@ class NewsViewModel: ObservableObject {
         }
     }
 
+    // MARK: - AI Summarization
+    
+    func generateAISummary(for newsItem: NewsItem, retryCount: Int = 0) {
+        #if os(iOS) || os(macOS)
+        // Check if we already have a summary or are generating one
+        guard newsItem.aiSummary == nil && !newsItem.isGeneratingAISummary else {
+            return
+        }
+        
+        // Find the index of the newsItem in the arrays
+        guard let index = newsItems.firstIndex(where: { $0.id == newsItem.id }) else {
+            return
+        }
+        
+        // Flag that we're generating a summary
+        newsItems[index].isGeneratingAISummary = true
+        
+        // Also update in filteredNewsItems if present
+        if let filteredIndex = filteredNewsItems.firstIndex(where: { $0.id == newsItem.id }) {
+            filteredNewsItems[filteredIndex].isGeneratingAISummary = true
+        }
+        
+        // Trigger UI update
+        objectWillChange.send()
+        
+        // Generate the summary
+        ArticleSummarizer.shared.summarizeArticleFromURL(newsItem.url) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                // Find the index again as it might have changed
+                guard let index = self.newsItems.firstIndex(where: { $0.id == newsItem.id }) else {
+                    return
+                }
+                
+                switch result {
+                case .success(let summary):
+                    // Check if the summary contains CSS styling code or other garbage
+                    let containsCSSPatterns = summary.contains(":first-child") || 
+                                              summary.contains("[&>") || 
+                                              summary.contains("h-full") ||
+                                              summary.contains("w-full") ||
+                                              summary.contains("overflow-hidden") ||
+                                              summary.range(of: "\\[&>:[^]]*\\]", options: .regularExpression) != nil
+                    
+                    if containsCSSPatterns || summary.count < 20 {
+                        // If the summary contains CSS patterns or is too short, mark as failed and retry
+                        print("Summary contains CSS patterns or is too short - retrying")
+                        
+                        let maxRetries = 2
+                        if retryCount < maxRetries {
+                            // Retry with different approach
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                                self?.generateAISummary(for: newsItem, retryCount: retryCount + 1)
+                            }
+                            return
+                        } else {
+                            // Max retries exceeded, use fallback message
+                            self.newsItems[index].isGeneratingAISummary = false
+                            self.newsItems[index].aiSummary = "Unable to generate a high-quality summary for this article format."
+                        }
+                    } else {
+                        // Set the AI summary for valid result
+                        self.newsItems[index].isGeneratingAISummary = false
+                        self.newsItems[index].aiSummary = summary
+                    }
+                    
+                    // Also update in filteredNewsItems if present
+                    if let filteredIndex = self.filteredNewsItems.firstIndex(where: { $0.id == newsItem.id }) {
+                        self.filteredNewsItems[filteredIndex].isGeneratingAISummary = false
+                        self.filteredNewsItems[filteredIndex].aiSummary = self.newsItems[index].aiSummary
+                    }
+                case .failure(let error):
+                    // If we haven't exceeded max retries, try again with a delay
+                    let maxRetries = 2
+                    if retryCount < maxRetries {
+                        print("Failed to generate AI summary (attempt \(retryCount + 1) of \(maxRetries + 1)): \(error.localizedDescription)")
+                        print("Retrying in 1 second...")
+                        
+                        // Keep the generating state on
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                            self?.generateAISummary(for: newsItem, retryCount: retryCount + 1)
+                        }
+                        return
+                    }
+                    
+                    // Max retries exceeded, update state to reflect failure
+                    print("Failed to generate AI summary after \(maxRetries + 1) attempts: \(error.localizedDescription)")
+                    
+                    self.newsItems[index].isGeneratingAISummary = false
+                    // Set a fallback summary to indicate the failure
+                    if let articleSummarizerError = error as? ArticleSummarizer.SummarizerError, 
+                       articleSummarizerError == ArticleSummarizer.SummarizerError.preprocessingError {
+                        self.newsItems[index].aiSummary = "This content cannot be summarized. It may be an image or unsupported format."
+                    } else {
+                        self.newsItems[index].aiSummary = "Unable to generate summary. The article format may not be compatible."
+                    }
+                    
+                    // Also update in filteredNewsItems if present
+                    if let filteredIndex = self.filteredNewsItems.firstIndex(where: { $0.id == newsItem.id }) {
+                        self.filteredNewsItems[filteredIndex].isGeneratingAISummary = false
+                        self.filteredNewsItems[filteredIndex].aiSummary = self.newsItems[index].aiSummary
+                    }
+                }
+                
+                // Trigger UI update
+                self.objectWillChange.send()
+            }
+        }
+        #else
+        // watchOS implementation - do nothing or show error
+        print("AI summary generation not supported on this platform")
+        #endif
+    }
+
     // MARK: - Core Data Operations
 
     func isArticleSaved(articleID: Int) -> Bool {

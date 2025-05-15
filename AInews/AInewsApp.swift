@@ -11,6 +11,7 @@ import SwiftUI
 struct AINewsApp: App {
     @StateObject private var newsViewModel: NewsViewModel
     @State private var showSplash = true // State to control splash screen visibility
+    @State private var showAIIntro = false // State to control AI intro screen visibility
     @StateObject private var navigationManager = AppNavigationManager() // Add the navigation manager
     @StateObject private var preferencesService: UserPreferencesService // Removed inline initialization
     @State private var selectedTab: AppTab = .newsFeed // State to control TabView selection
@@ -21,6 +22,10 @@ struct AINewsApp: App {
         _preferencesService = StateObject(wrappedValue: prefs) // Initialize StateObject
         // Initialize NewsViewModel with the managed object context and the created preferences service
         _newsViewModel = StateObject(wrappedValue: NewsViewModel(context: persistenceController.container.viewContext, preferencesService: prefs))
+        
+        // Check if it's the first launch to show the AI intro
+        let hasSeenIntro = UserDefaults.standard.bool(forKey: "hasSeenAIIntro")
+        _showAIIntro = State(initialValue: !hasSeenIntro)
     }
 
     var body: some Scene {
@@ -35,6 +40,13 @@ struct AINewsApp: App {
                                     self.showSplash = false
                                 }
                             }
+                        }
+                } else if showAIIntro {
+                    // Display the intro directly in the ZStack if it should be shown
+                    AIFeatureIntroView(showIntro: $showAIIntro)
+                        .onDisappear {
+                            // Mark that the user has seen the intro
+                            UserDefaults.standard.set(true, forKey: "hasSeenAIIntro")
                         }
                 } else {
                     // Main TabView for app content
@@ -58,11 +70,21 @@ struct AINewsApp: App {
                         newsViewModel.fetchSavedArticles()
                     }
                     // Moved onReceive outside of onAppear, applied directly to TabView
-                    .onReceive(navigationManager.$activeTab) { tab in
+                    .onReceive(navigationManager.$activeTab) { tab in 
                         if let tab = tab {
                             selectedTab = tab
                         }
                     }
+                    // iOS-specific full screen cover
+                    #if os(iOS)
+                    .sheet(isPresented: $showAIIntro) {
+                        AIFeatureIntroView(showIntro: $showAIIntro)
+                            .onDisappear {
+                                // Mark that the user has seen the intro
+                                UserDefaults.standard.set(true, forKey: "hasSeenAIIntro")
+                            }
+                    }
+                    #endif
                 }
             }
             // Use the static shared instance for the environment as well

@@ -74,12 +74,42 @@ struct NewsCardView: View {
                     .font(.headline.weight(.semibold))
                     .foregroundColor(.primary)
                     .lineLimit(2)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        #if os(iOS)
+                        showingArticleDetail = true
+                        #elseif os(macOS)
+                        if let url = URL(string: newsItem.url) {
+                            NSWorkspace.shared.open(url)
+                        }
+                        #endif
+                    }
+                
+                #if os(iOS) || os(macOS)
+                // Move AI Summary component to top position for prominence
+                // Wrap in a non-interactive container to isolate touch events
+                AISummaryView(newsItem: newsItem, viewModel: viewModel)
+                    .padding(.vertical, 4)
+                    // This prevents the summary view touches from propagating to parent views
+                    .contentShape(Rectangle())
+                    .allowsHitTesting(true)
+                #endif
 
                 Text(newsItem.summary)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        #if os(iOS)
+                        showingArticleDetail = true
+                        #elseif os(macOS)
+                        if let url = URL(string: newsItem.url) {
+                            NSWorkspace.shared.open(url)
+                        }
+                        #endif
+                    }
 
                 if !newsItem.tags.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -119,9 +149,10 @@ struct NewsCardView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundColor(.blue)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                     #if os(iOS) // Sheet for ArticleDetailView is iOS-only
                     .sheet(isPresented: $showingArticleDetail) {
-                        ArticleDetailView(newsItem: newsItem)
+                        ArticleDetailView(newsItem: newsItem, viewModel: viewModel)
                     }
                     #endif
                     // Updated contextMenu to be conditional for watchOS

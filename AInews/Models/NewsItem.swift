@@ -59,6 +59,17 @@ struct NewsItem: Codable, Identifiable {
     let usecases: [String]
     let significance: String // "HIGH", "MEDIUM", "LOW"
     let impact: String
+    
+    // Property to store AI-generated summary
+    // Not included in JSON decoding - will be populated after fetching
+    var aiSummary: String?
+    var isGeneratingAISummary: Bool = false
+
+    // CodingKeys to exclude aiSummary and isGeneratingAISummary from JSON decoding/encoding
+    private enum CodingKeys: String, CodingKey {
+        case id, title, summary, subreddit, post_id, created_at, date_posted, 
+             tags, image, url, usecases, significance, impact
+    }
 
     // Computed property to convert image string to URL
     var imageURL: URL? {
